@@ -50,10 +50,32 @@ func handleGetJobStatus(db *sql.DB) func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		jobId := c.Params("jobId")
 		var status int
-		var result int
-		err := db.QueryRow("SELECT status, result FROM jobs WHERE id = $1", jobId).Scan(&status, &result)
+		err := db.QueryRow("SELECT status FROM jobs WHERE id = $1", jobId).Scan(&status)
 		if err != nil {
 			return c.SendStatus(500)
+		}
+		var link string
+		var title string
+		var description string
+		var similarity int
+		var result []fiber.Map
+		refs, err := db.Query("SELECT link, title, description, similarity FROM refs WHERE jobId = $1", jobId)
+		if err != nil {
+			return c.SendStatus(500)
+		}
+		for refs.Next() {
+			err := refs.Scan(&link, &title, &description, &similarity)
+			if err != nil {
+				return c.SendStatus(500)
+			}
+			obj := fiber.Map{
+				"title":       title,
+				"description": description,
+				"similarity":  similarity,
+				"link":        link,
+			}
+			result = append(result, obj)
+
 		}
 		return c.JSON(fiber.Map{
 			"status": status,
@@ -67,6 +89,9 @@ func Server(ch *amqp.Channel, q amqp.Queue, db *sql.DB) {
 	app.Static("/", "./static")
 	app.Post("/", handleSubmit(db, ch, q))
 	app.Get("/status/:jobId", handleGetJobStatus(db))
+	app.Use(func(c *fiber.Ctx) error {
+		return c.Redirect("/404.html")
+	})
 	log.Printf("Server started")
 	app.Listen(":8080")
 }

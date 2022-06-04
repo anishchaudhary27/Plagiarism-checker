@@ -19,7 +19,7 @@ func handleMsg(msg []string, db *sql.DB,
 	customsearchService *customsearch.Service, customSearchEngineID string) {
 	location := msg[0]
 	jobId := msg[1]
-	log.Printf("Processing job %s", jobId)
+	log.Printf("Processing job: %s", jobId)
 	rawText, err := exec.Command("pdf2text", "./files/"+location).Output()
 	if err != nil {
 		//update failed status in database and return
@@ -67,21 +67,26 @@ func handleMsg(msg []string, db *sql.DB,
 	}
 
 	sort.Sort(pageList)
-	Stop := 5
-	if len(pageList) < 5 {
-		Stop = len(pageList)
-	}
+	k := 0
 	maxSimilarity := 0
-	for j := 0; j < Stop; j++ {
+	for j := 0; j < pageList.Len(); j++ {
+		if k > 4 {
+			break
+		}
+		if pageList[j].SimilarityScore < 10 {
+			continue
+		}
 		_, err = db.Exec("INSERT INTO refs (jobId, link, title, description, similarity) VALUES ($1, $2, $3, $4, $5)",
 			jobId, pageList[j].Link, pageList[j].Title, pageList[j].Description, pageList[j].SimilarityScore)
 		FailOnError(err, "Failed to insert ref")
 		if pageList[j].SimilarityScore > maxSimilarity {
 			maxSimilarity = pageList[j].SimilarityScore
 		}
+		k++
 	}
 	_, err = db.Exec("UPDATE jobs SET status = $1, result = $2 WHERE id = $3", 1, maxSimilarity, jobId)
 	FailOnError(err, "Failed to update job status")
+	log.Printf("Processed job: %s", jobId)
 }
 
 func Checker(ch *amqp.Channel, q amqp.Queue, db *sql.DB,
