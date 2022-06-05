@@ -36,11 +36,11 @@ func main() {
 
 	q, err := ch.QueueDeclare(
 		myEnv["RABBITMQ_CHANNEL"],
-		false,                    
-		false,                     
-		false,                     
-		false,                    
-		nil,                       
+		false,
+		false,
+		false,
+		false,
+		nil,
 	)
 	FailOnError(err, "Failed to declare a queue")
 
@@ -48,6 +48,7 @@ func main() {
 	customsearchService, err := customsearch.NewService(ctx, option.WithAPIKey(myEnv["GOOGLE_CUSTOM_SERACH_API_KEY"]))
 	FailOnError(err, "Failed to create custom search service")
 
+	// launching checker in another go routine
 	go Checker(ch, q, db, customsearchService, myEnv["GOOGLE_CUSTOM_SEARCH_ENGINE_ID"])
 	Server(ch, q, db)
 }
