@@ -44,9 +44,9 @@ func GetContentFromURL(url string) string {
 	}
 
 	doc := soup.HTMLParse(resp)
-	ps := doc.FindAll("p")
+	tmp := doc.FindAll("p")
 	var content string
-	for _, p := range ps {
+	for _, p := range tmp {
 		content += p.Text()
 	}
 	return content
