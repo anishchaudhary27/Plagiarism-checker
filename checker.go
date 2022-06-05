@@ -48,7 +48,7 @@ func handleMsg(msg []string, db *sql.DB,
 		}
 		j := 0
 		for _, item := range searchResult.Items {
-			pageList = append(pageList, Page{Link: item.Link, Title: item.HtmlTitle, Description: item.HtmlSnippet})
+			pageList = append(pageList, Page{Link: item.Link, Title: item.Title, Description: item.Snippet})
 			j++
 			if j > maxSearchResults {
 				break
@@ -91,6 +91,7 @@ func handleMsg(msg []string, db *sql.DB,
 
 func Checker(ch *amqp.Channel, q amqp.Queue, db *sql.DB,
 	customsearchService *customsearch.Service, customSearchEngineID string) {
+	//return
 	msgs, err := ch.Consume(
 		q.Name, // queue
 		"",     // consumer
