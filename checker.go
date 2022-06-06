@@ -41,6 +41,7 @@ func handleMsg(msg []string, db *sql.DB,
 	var pageList PageList
 
 	i := 0
+	var added map[string]bool = make(map[string]bool)
 	for _, phrase := range rankedPhrases {
 		searchResult, err := customsearchService.Cse.List().Q(phrase.Left + " " + phrase.Right).Cx(customSearchEngineID).Do()
 		if err != nil {
@@ -48,6 +49,10 @@ func handleMsg(msg []string, db *sql.DB,
 		}
 		j := 0
 		for _, item := range searchResult.Items {
+			if added[item.Link] {
+				continue
+			}
+			added[item.Link] = true
 			pageList = append(pageList, Page{Link: item.Link, Title: item.Title, Description: item.Snippet})
 			j++
 			if j > maxSearchResults {
