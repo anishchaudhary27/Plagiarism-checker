@@ -20,7 +20,7 @@ func handleMsg(msg []string, db *sql.DB,
 	location := msg[0]
 	jobId := msg[1]
 	log.Printf("Processing job: %s", jobId)
-	rawText, err := exec.Command("pdf2text", "./files/"+location).Output()
+	rawText, err := exec.Command("pdf2txt", "./files/"+location).Output()
 	if err != nil {
 		//update failed status in database and return
 		_, err = db.Exec("UPDATE jobs SET status = $1, result = $2 WHERE id = $3", -1, 0, jobId)
