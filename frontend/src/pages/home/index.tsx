@@ -64,9 +64,8 @@ export default function Home() {
         Plagiarism checker
       </Heading>
       <Text fontSize="lg" marginTop="10">
-        We look for similar articles across wikipedia. Then we use overlap
-        cofficient to rank articles that overlap the most. Top 5 most
-        overlapping articles are returned.
+      An online plagiarism checker service that checks PDFs for plagiarism against articleson wikipedia(en). 
+      Tech stack includes Go, PostgreSQL, RabbitMQ, Google Custom Search API, React, Typescript.
       </Text>
       <FormControl marginTop="20">
         <FormLabel as="legend">Choose PDF</FormLabel>
