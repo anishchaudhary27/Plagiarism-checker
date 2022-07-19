@@ -1,11 +1,11 @@
 # Plagiarism checker
 
-An online plagiarism checker service that checks PDFs for plagiarism against articleson wikipedia(en). Tech stack includes Go, PostgreSQL, RabbitMQ, Google Custom Search API, React, Typescript.
+An online plagiarism checker service that checks PDFs for plagiarism against articleson wikipedia(en).
 
 > ## Live demo (deployed on a GCP compute engine) - [https://plagiarismchecks.com](https://plagiarismchecks.com/)
 
 # tech stack
-go, postgreSQL, rabbitMQ, javascript, react, typescript, chakra UI
+Go, PostgreSQL, RabbitMQ, Google Custom Search API, React, Typescript
 
 # How it works
 
