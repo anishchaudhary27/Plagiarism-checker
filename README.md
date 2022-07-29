@@ -2,7 +2,7 @@
 
 An online plagiarism checker service that checks PDFs for plagiarism against articleson wikipedia(en).
 
-> ## Live demo (deployed on a GCP compute engine) - [https://plagiarismchecks.com](https://plagiarismchecks.com/)
+> ## Live demo (deployed on a Google compute engine) - [https://plagiarismchecks.com](https://plagiarismchecks.com/)
 
 # tech stack
 Go, PostgreSQL, RabbitMQ, Google Custom Search API, React, Typescript
